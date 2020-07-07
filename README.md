@@ -1,2 +1,3 @@
-# splatoon-discordbot
-スプラ2のDiscord用BOT
+# splatoon2bot
+身内用に実装したスプラ2のDiscordBot
+
