@@ -1,5 +1,13 @@
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
+const admin = require("firebase-admin");
+const serviceAccount = require("./firebase.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://ika2bot.firebaseio.com"
+});
+const db = admin.firestore();
 
 dotenv.config();
 
@@ -13,7 +21,7 @@ const token = process.env.DISCORD_TOKEN;
 const client = new Discord.Client();
 
 client.on('ready', () => {
-  console.log(`${client.user.username}でログインしました。`)
+  console.log(`${client.user.username}がログインしました！`)
 })
 
 client.on('message', async message => {
