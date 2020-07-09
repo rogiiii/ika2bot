@@ -3,12 +3,6 @@ const Discord = require('discord.js');
 const admin = require("firebase-admin");
 const serviceAccount = require("./firebase.json");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://ika2bot.firebaseio.com"
-});
-const db = admin.firestore();
-
 dotenv.config();
 
 if ( typeof process.env.DISCORD_TOKEN === 'undefined' || !process.env.DISCORD_TOKEN ) {
@@ -18,17 +12,32 @@ if ( typeof process.env.DISCORD_TOKEN === 'undefined' || !process.env.DISCORD_TO
 }
 const token = process.env.DISCORD_TOKEN;
 
-const client = new Discord.Client();
+(async () => {
 
-client.on('ready', () => {
-  console.log(`${client.user.username}がログインしました！`)
-})
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://ika2bot.firebaseio.com"
+  });
+  const db = admin.firestore();
+  const weapons = await db.collection('weapons').get();
 
-client.on('message', async message => {
-  const author = message.author.username;
-  if ( ['ブキ', 'ぶき', '武器'].includes(message.content) ) {
-    message.reply(`${author}`)
-  }
-})
+  const client = new Discord.Client();
 
-client.login(token);
+  client.on('ready', () => {
+    console.log(`${client.user.username}がログインしました！`);
+  })
+
+  client.on('message', async message => {
+    const author = message.author.username;
+    const random = Math.floor( Math.random() * weapons.docs.length );
+    const weapon = weapons.docs[random].data();
+    if ( ['ブキ', 'ぶき', '武器'].includes(message.content) ) {
+      message.reply(`\n次は**${weapon.name}**を使おう！`);
+    }
+  })
+
+  client.login(token);
+
+
+})();
+
