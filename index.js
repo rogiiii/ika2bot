@@ -28,16 +28,14 @@ const token = process.env.DISCORD_TOKEN;
   })
 
   client.on('message', async message => {
-    const author = message.author.username;
     const random = Math.floor( Math.random() * weapons.docs.length );
     const weapon = weapons.docs[random].data();
     if ( ['ブキ', 'ぶき', '武器'].includes(message.content) ) {
-      message.reply(`\n次は**${weapon.name}**を使おう！`);
+      message.channel.send(`${message.author} 次は「**${weapon.name}**」を使おう！`);
     }
   })
 
   client.login(token);
-
 
 })();
 
